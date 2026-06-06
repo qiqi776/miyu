@@ -10,6 +10,7 @@ export interface TimelineItem {
   createdAt: number;
   tag?: RecordTag;
   visibility?: 'both' | 'me';
+  imageUrl?: string;
 }
 
 export interface DailyTask {
@@ -17,6 +18,7 @@ export interface DailyTask {
   title: string;
   assignee: 'me' | 'partner' | 'undecided';
   completed: boolean;
+  repeat?: 'none' | 'daily' | 'weekly';
 }
 
 export interface DailyQuestion {

@@ -41,6 +41,7 @@ const defaultData: CoupleData = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'record' | 'interact' | 'memory'>('home');
+  const [initRecordEditor, setInitRecordEditor] = useState(false);
   const [data, setData] = useState<CoupleData>(defaultData);
   const [currentUser, setCurrentUser] = useState<ActiveUser>('me');
 
@@ -62,80 +63,82 @@ export default function App() {
   }, [data]);
 
   return (
-    <div className="flex flex-col h-screen bg-rose-50 text-gray-800 font-sans selection:bg-rose-200">
+    <div className="flex flex-col h-[100dvh] bg-stone-100 text-gray-800 font-sans selection:bg-rose-200 items-center justify-center">
       {/* Top Banner specific to offline demo */}
-      <div className="w-full max-w-md mx-auto bg-rose-100 text-rose-800 text-[10px] text-center py-1 flex justify-center items-center gap-2">
+      <div className="w-full bg-rose-100 text-rose-800 text-[10px] text-center py-1.5 flex justify-center items-center gap-2 absolute top-0 z-50">
         <span>当前体验身份:</span>
         <button 
           onClick={() => setCurrentUser('me')} 
-          className={`px-2 py-0.5 rounded-full font-medium ${currentUser === 'me' ? 'bg-rose-500 text-white' : 'bg-white/50 text-rose-600'}`}
+          className={`px-2.5 py-0.5 rounded-full font-bold transition-colors ${currentUser === 'me' ? 'bg-rose-500 text-white' : 'bg-white/50 text-rose-600 hover:bg-white'}`}
         >
           {data.myName}
         </button>
         <button 
           onClick={() => setCurrentUser('partner')} 
-          className={`px-2 py-0.5 rounded-full font-medium ${currentUser === 'partner' ? 'bg-rose-500 text-white' : 'bg-white/50 text-rose-600'}`}
+          className={`px-2.5 py-0.5 rounded-full font-bold transition-colors ${currentUser === 'partner' ? 'bg-rose-500 text-white' : 'bg-white/50 text-rose-600 hover:bg-white'}`}
         >
           {data.partnerName}
         </button>
       </div>
       
-      <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-white shadow-xl relative">
-        <AnimatePresence mode="wait">
-          {activeTab === 'home' && (
-            <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
-              <HomeTab data={data} setData={setData} currentUser={currentUser} />
-            </motion.div>
-          )}
-          {activeTab === 'record' && (
-            <motion.div key="record" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
-              <RecordTab data={data} setData={setData} currentUser={currentUser} />
-            </motion.div>
-          )}
-          {activeTab === 'interact' && (
-            <motion.div key="interact" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
-              <InteractTab data={data} setData={setData} currentUser={currentUser} />
-            </motion.div>
-          )}
-          {activeTab === 'memory' && (
-            <motion.div key="memory" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
-              <MemoryTab data={data} setData={setData} currentUser={currentUser} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-[#faf9f8] shadow-2xl relative md:max-h-[850px] md:h-full md:rounded-[2.5rem] md:border-8 md:border-white w-full flex flex-col mt-7 md:mt-10">
+        <div className="flex-1 overflow-hidden relative">
+          <AnimatePresence mode="wait">
+            {activeTab === 'home' && (
+              <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
+                <HomeTab data={data} setData={setData} currentUser={currentUser} setActiveTab={setActiveTab} setInitRecordEditor={setInitRecordEditor} />
+              </motion.div>
+            )}
+            {activeTab === 'record' && (
+              <motion.div key="record" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
+                <RecordTab data={data} setData={setData} currentUser={currentUser} initRecordEditor={initRecordEditor} setInitRecordEditor={setInitRecordEditor} />
+              </motion.div>
+            )}
+            {activeTab === 'interact' && (
+              <motion.div key="interact" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
+                <InteractTab data={data} setData={setData} currentUser={currentUser} setActiveTab={setActiveTab} />
+              </motion.div>
+            )}
+            {activeTab === 'memory' && (
+              <motion.div key="memory" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
+                <MemoryTab data={data} setData={setData} currentUser={currentUser} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Bottom Navigation */}
-        <nav className="absolute bottom-0 w-full bg-white/90 backdrop-blur-lg border-t border-rose-100 flex justify-around items-center h-16 px-2 shrink-0 pb-safe z-50">
+        <nav className="w-full bg-white/50 backdrop-blur-3xl border-t border-gray-100 flex justify-around items-center h-[calc(4rem+env(safe-area-inset-bottom))] px-4 shrink-0 pb-[env(safe-area-inset-bottom)] z-50 md:rounded-b-[2rem] shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
           <button
             onClick={() => setActiveTab('home')}
-            className={`flex flex-col items-center justify-center w-16 transition-colors ${activeTab === 'home' ? 'text-rose-500' : 'text-gray-400 hover:text-rose-300'}`}
+            className={`flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${activeTab === 'home' ? 'text-gray-900 bg-gray-50 drop-shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
           >
-            <Home className={`w-6 h-6 ${activeTab === 'home' ? 'fill-rose-50' : ''}`} strokeWidth={activeTab === 'home' ? 2.5 : 2} />
-            <span className="text-[10px] mt-1 font-medium">首页</span>
+            <Home className="w-[22px] h-[22px]" strokeWidth={activeTab === 'home' ? 2.5 : 2} />
+            {activeTab === 'home' && <span className="text-[9px] mt-0.5 font-bold tracking-widest">首页</span>}
           </button>
           
           <button
             onClick={() => setActiveTab('record')}
-            className={`flex flex-col items-center justify-center w-16 transition-colors ${activeTab === 'record' ? 'text-rose-500' : 'text-gray-400 hover:text-rose-300'}`}
+            className={`flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${activeTab === 'record' ? 'text-gray-900 bg-gray-50 drop-shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
           >
-            <BookOpen className={`w-6 h-6 ${activeTab === 'record' ? 'fill-rose-50' : ''}`} strokeWidth={activeTab === 'record' ? 2.5 : 2} />
-            <span className="text-[10px] mt-1 font-medium">记录</span>
+            <BookOpen className="w-[22px] h-[22px]" strokeWidth={activeTab === 'record' ? 2.5 : 2} />
+            {activeTab === 'record' && <span className="text-[9px] mt-0.5 font-bold tracking-widest">记录</span>}
           </button>
 
           <button
             onClick={() => setActiveTab('interact')}
-            className={`flex flex-col items-center justify-center w-16 transition-colors ${activeTab === 'interact' ? 'text-rose-500' : 'text-gray-400 hover:text-rose-300'}`}
+            className={`flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${activeTab === 'interact' ? 'text-gray-900 bg-gray-50 drop-shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
           >
-            <Sparkles className={`w-6 h-6 ${activeTab === 'interact' ? 'fill-rose-50' : ''}`} strokeWidth={activeTab === 'interact' ? 2.5 : 2} />
-            <span className="text-[10px] mt-1 font-medium">互动</span>
+            <Sparkles className="w-[22px] h-[22px]" strokeWidth={activeTab === 'interact' ? 2.5 : 2} />
+            {activeTab === 'interact' && <span className="text-[9px] mt-0.5 font-bold tracking-widest">互动</span>}
           </button>
 
           <button
             onClick={() => setActiveTab('memory')}
-            className={`flex flex-col items-center justify-center w-16 transition-colors ${activeTab === 'memory' ? 'text-rose-500' : 'text-gray-400 hover:text-rose-300'}`}
+            className={`flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${activeTab === 'memory' ? 'text-gray-900 bg-gray-50 drop-shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
           >
-            <CalendarHeart className={`w-6 h-6 ${activeTab === 'memory' ? 'fill-rose-50' : ''}`} strokeWidth={activeTab === 'memory' ? 2.5 : 2} />
-            <span className="text-[10px] mt-1 font-medium">回忆</span>
+            <CalendarHeart className="w-[22px] h-[22px]" strokeWidth={activeTab === 'memory' ? 2.5 : 2} />
+            {activeTab === 'memory' && <span className="text-[9px] mt-0.5 font-bold tracking-widest">回忆</span>}
           </button>
         </nav>
       </main>

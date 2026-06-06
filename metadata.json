@@ -1,0 +1,6 @@
+{
+  "name": "LoveSpace",
+  "description": "A sweet, minimal app for couples to track days together, share a bucket list, and leave notes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
